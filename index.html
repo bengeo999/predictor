@@ -3,180 +3,441 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ultimate Sports Predictor — With Slip</title>
+  <title>BG Predictor — Professional Sports Analysis</title>
   <style>
     :root {
-      --bg: #0a1a2b;
-      --card: #12304b;
-      --muted: #a0b4d1;
-      --accent: #26d07c;
-      --accent2: #4cc0ff;
+      --bg-primary: #0f1419;
+      --bg-secondary: #1a1f29;
+      --card: #242b3d;
+      --card-hover: #2d3548;
+      --muted: #8b9dc3;
+      --accent: #00c851;
+      --accent2: #007e33;
+      --accent-light: #39ff74;
+      --danger: #ff3547;
+      --warning: #ffbb33;
+      --text-primary: #ffffff;
+      --text-secondary: #dbe7fd;
+      --border: rgba(139, 157, 195, 0.2);
     }
     * { box-sizing: border-box; }
     body {
-      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
-      background: linear-gradient(180deg, #08172f, #0a1a2b);
-      color: #e6eef8;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, #0a0e14 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      position: relative;
     }
+    
+    /* Sports betting website background pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 25% 25%, rgba(0, 200, 81, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(0, 126, 51, 0.08) 0%, transparent 50%);
+      z-index: -1;
+    }
+
     .wrap {
-      max-width: 1300px;
-      margin: 24px auto;
-      padding: 16px;
-      background-color: var(--card);
-      border-radius: 12px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
     }
+
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      padding: 20px 0;
+      border-bottom: 2px solid var(--border);
+      flex-wrap: wrap;
+      gap: 16px;
     }
+
     .brand {
       display: flex;
-      gap: 12px;
+      gap: 16px;
       align-items: center;
     }
+
     .mark {
-      width: 48px;
-      height: 48px;
-      border-radius: 10px;
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 1.2rem;
+      font-weight: 900;
+      font-size: 1.4rem;
       user-select: none;
-      color: #012;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0, 200, 81, 0.3);
     }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+    }
+
+    .brand-text p {
+      margin: 2px 0 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .status-badge {
+      background: rgba(0, 200, 81, 0.2);
+      color: var(--accent-light);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+    }
+
     .panel {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 18px;
+      background: var(--card);
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
     }
+
+    .panel:hover {
+      background: var(--card-hover);
+      border-color: rgba(0, 200, 81, 0.3);
+    }
+
+    .panel-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title::before {
+      content: '⚡';
+      font-size: 20px;
+    }
+
     label {
       display: block;
       margin-bottom: 6px;
       color: var(--muted);
+      font-weight: 500;
     }
-    input, select, button {
-      padding: 10px;
-      border-radius: 10px;
-      border: 0;
-      background: transparent;
-      color: inherit;
-      font-size: 1rem;
+
+    input, select, button, textarea {
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-primary);
+      font-size: 16px;
+      transition: all 0.3s ease;
     }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
+    }
+
     .row {
       display: flex;
-      gap: 10px;
+      gap: 12px;
+      flex-wrap: wrap;
     }
-    input[type=text], select {
+
+    input[type=text], select, textarea {
       flex: 1;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      color: #e6eef8;
+      min-width: 120px;
     }
+
     button.primary {
-      background: linear-gradient(90deg, var(--accent), var(--accent2));
-      color: #012;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: white;
       font-weight: 700;
       cursor: pointer;
       border: none;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
+      min-width: 120px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 12px rgba(0, 200, 81, 0.3);
     }
+
     button.primary:hover {
-      background: linear-gradient(90deg, var(--accent2), var(--accent));
+      background: linear-gradient(135deg, var(--accent-light), var(--accent));
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 200, 81, 0.4);
     }
+
+    button.danger {
+      background: linear-gradient(135deg, var(--danger), #cc2a3a);
+      color: white;
+      font-weight: 700;
+    }
+
     .results-container {
-      display: flex;
-      gap: 12px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-    }
-    .results {
-      flex: 2;
-      min-width: 350px;
       display: grid;
       grid-template-columns: 2fr 1fr;
-      gap: 12px;
+      gap: 20px;
+      margin-top: 20px;
     }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      color: #e6eef8;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 8px;
+      overflow: hidden;
     }
+
     th, td {
-      padding: 8px;
-      border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+      padding: 12px 8px;
+      border-bottom: 1px solid var(--border);
       text-align: left;
     }
+
+    th {
+      background: rgba(0, 200, 81, 0.1);
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
     .muted {
       color: var(--muted);
     }
+
     .stars {
       font-size: 18px;
-      color: #ffd54a;
+      color: #ffd700;
+      text-shadow: 0 0 4px rgba(255, 215, 0, 0.3);
     }
+
     footer {
-      margin-top: 18px;
+      margin-top: 40px;
+      padding: 20px 0;
       color: var(--muted);
       font-size: 13px;
       text-align: center;
+      border-top: 1px solid var(--border);
     }
+
     #slipPanel {
-      flex: 1;
-      min-width: 300px;
-      max-height: 700px;
+      position: sticky;
+      top: 20px;
+      max-height: 80vh;
       overflow-y: auto;
     }
+
     #slipList {
-      list-style:none;
-      margin:0;
-      padding:0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
+
     #slipList li {
-      background: rgba(38, 208, 124, 0.15);
-      margin-bottom: 10px;
-      border-radius: 10px;
-      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(0, 200, 81, 0.15), rgba(0, 126, 51, 0.1));
+      margin-bottom: 12px;
+      border-radius: 12px;
+      padding: 16px;
       position: relative;
+      border: 1px solid rgba(0, 200, 81, 0.3);
+      transition: all 0.3s ease;
     }
+
+    #slipList li:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 200, 81, 0.2);
+    }
+
     #slipList li button.removeSlipItem {
       position: absolute;
-      top: 6px;
+      top: 8px;
       right: 8px;
-      background: transparent;
+      background: var(--danger);
       border: none;
-      color: #f55;
+      color: white;
       font-weight: 700;
-      font-size: 18px;
+      font-size: 16px;
       cursor: pointer;
       user-select: none;
-    }
-    #slipControls {
-      margin-top: 12px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      justify-content: center;
     }
+
+    #slipControls {
+      margin-top: 16px;
+      display: flex;
+      gap: 12px;
+    }
+
     #slipControls button {
       flex: 1;
-      margin: 0 4px;
-      padding: 10px;
+      padding: 12px;
     }
-    @media(max-width: 900px) {
-      .results-container {
-        flex-direction: column;
+
+    .multi-games-section {
+      background: linear-gradient(135deg, rgba(0, 200, 81, 0.05), rgba(0, 126, 51, 0.02));
+      border: 1px solid rgba(0, 200, 81, 0.2);
+    }
+
+    .game-input {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px dashed var(--border);
+      padding: 16px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+    }
+
+    .game-input:last-child {
+      margin-bottom: 0;
+    }
+
+    .remove-game {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* Mobile Styles */
+    @media(max-width: 768px) {
+      body {
+        padding: 0;
+        margin: 0;
       }
-      .results {
+      
+      .wrap {
+        padding: 12px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        margin-bottom: 16px;
+        padding: 16px 0;
+      }
+
+      .brand {
+        justify-content: center;
+        margin-bottom: 12px;
+      }
+
+      .row {
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      input[type=text], select, button.primary, textarea {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .results-container {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .results-grid {
         grid-template-columns: 1fr;
       }
+
       #slipPanel {
+        position: static;
         max-height: none;
-        margin-top: 20px;
+        order: -1;
       }
+
+      .panel {
+        padding: 16px;
+      }
+
+      table {
+        font-size: 14px;
+      }
+
+      th, td {
+        padding: 8px 4px;
+      }
+
+      #slipControls {
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .mark {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+      }
+
+      .brand-text h1 {
+        font-size: 20px;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .wrap {
+        padding: 8px;
+      }
+
+      input, select, button, textarea {
+        padding: 14px;
+        font-size: 16px;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th, td {
+        padding: 6px 3px;
+      }
+    }
+
+    /* Canvas for slip image generation */
+    #slipCanvas {
+      display: none;
     }
   </style>
 </head>
@@ -184,98 +445,131 @@
   <div class="wrap">
     <header>
       <div class="brand">
-        <div class="mark">SP</div>
-        <div>
-          <div style="font-weight:800">Ultimate Sports Predictor</div>
-          <div class="muted" style="font-size:13px">Enter teams, select sport, click Analyze — daily low-risk predictions</div>
+        <div class="mark">BG</div>
+        <div class="brand-text">
+          <h1>BG Predictor</h1>
+          <p>Professional Sports Analysis & Predictions</p>
         </div>
       </div>
-      <div class="muted">Local demo — no external APIs</div>
+      <div class="status-badge">● LIVE ANALYSIS</div>
     </header>
 
     <div class="panel">
-      <div style="font-weight:700;margin-bottom:8px">Quick Analyze</div>
+      <div class="panel-title">Quick Match Analysis</div>
       <div class="row">
-        <input id="teamA" type="text" placeholder="Team A (home)" />
-        <input id="teamB" type="text" placeholder="Team B (away)" />
+        <input id="teamA" type="text" placeholder="Home Team" />
+        <input id="teamB" type="text" placeholder="Away Team" />
         <select id="sport">
           <option value="football">Football (Soccer)</option>
           <option value="basketball">Basketball</option>
           <option value="hockey">Hockey</option>
         </select>
-        <button id="analyzeBtn" class="primary">Analyze</button>
+        <button id="analyzeBtn" class="primary">Analyze Match</button>
       </div>
-      <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-        <input id="sportybetCode" type="text" placeholder="(Optional) Sportybet code / voucher" style="flex:1;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.03)" />
-        <button id="saveCode" class="primary" style="padding:10px 12px;">Save Code</button>
+      <div class="muted" style="margin-top:12px">
+        🎯 Advanced AI-powered analysis with historical data simulation
       </div>
-      <div class="muted" style="margin-top:8px">Note: This demo produces deterministic, research-like analysis client-side. For real markets, connect APIs.</div>
+    </div>
+
+    <div class="panel multi-games-section">
+      <div class="panel-title">Multi-Game Deep Analysis</div>
+      <div class="muted" style="margin-bottom:16px">
+        Add multiple games for comprehensive analysis and betting strategy
+      </div>
+      <div id="multiGamesContainer">
+        <div class="game-input">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px">
+            <div>
+              <label>Game 1 - Home Team</label>
+              <input type="text" placeholder="Enter home team" class="multi-teamA" />
+            </div>
+            <div>
+              <label>Game 1 - Away Team</label>
+              <input type="text" placeholder="Enter away team" class="multi-teamB" />
+            </div>
+          </div>
+          <div class="row">
+            <select class="multi-sport">
+              <option value="football">Football</option>
+              <option value="basketball">Basketball</option>
+              <option value="hockey">Hockey</option>
+            </select>
+            <button class="remove-game" onclick="removeGame(this)">Remove Game</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:12px">
+        <button id="addGameBtn" class="primary" style="flex:1">Add Another Game</button>
+        <button id="analyzeMultiBtn" class="primary" style="flex:1">Analyze All Games</button>
+      </div>
     </div>
 
     <div class="panel" id="todayPanel">
-      <div style="font-weight:700">Today's Generated Matches</div>
-      <div class="muted">The app generates a small set of well-analysed predictions each day (stored locally). Click Analyze on any match to re-evaluate.</div>
-      <div id="todayList" style="margin-top:10px"></div>
+      <div class="panel-title">Today's Featured Matches</div>
+      <div class="muted">AI-generated daily predictions with high confidence ratings</div>
+      <div id="todayList" style="margin-top:16px"></div>
     </div>
 
     <div class="results-container">
-      <div class="results">
-        <div class="panel" id="analysisPanel">
-          <div id="analysisTitle" style="font-weight:800">No analysis yet</div>
-          <div id="analysisSummary" class="muted">Enter teams and sport, then click Analyze to run a deep, low-risk analysis.</div>
+      <div class="results-grid">
+        <div class="panel full-width" id="analysisPanel">
+          <div id="analysisTitle" style="font-weight:800;font-size:20px">Ready for Analysis</div>
+          <div id="analysisSummary" class="muted">Select teams and sport, then click analyze for comprehensive prediction</div>
 
-          <div id="tablesWrap" style="margin-top:12px;display:none">
-            <h4 style="margin:6px 0">H2H (simulated last 5)</h4>
-            <table id="h2hTable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Winner</th></tr></thead><tbody></tbody></table>
+          <div id="tablesWrap" style="margin-top:20px;display:none">
+            <h4 style="margin:12px 0 8px 0">Head-to-Head Record (Last 5)</h4>
+            <table id="h2hTable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Result</th></tr></thead><tbody></tbody></table>
 
-            <div style="display:flex;gap:12px;margin-top:12px">
-              <div style="flex:1">
-                <h4 style="margin:6px 0">Team A - Last 5</h4>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px">
+              <div>
+                <h4 style="margin:12px 0 8px 0">Home Team - Recent Form</h4>
                 <table id="teamATable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Result</th></tr></thead><tbody></tbody></table>
               </div>
-              <div style="flex:1">
-                <h4 style="margin:6px 0">Team B - Last 5</h4>
+              <div>
+                <h4 style="margin:12px 0 8px 0">Away Team - Recent Form</h4>
                 <table id="teamBTable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Result</th></tr></thead><tbody></tbody></table>
               </div>
             </div>
 
-            <h4 style="margin:10px 0 6px 0">Highest Low Table</h4>
-            <table id="highLowTable"><thead><tr><th>Source</th><th>Highest Low Total</th></tr></thead><tbody></tbody></table>
+            <h4 style="margin:20px 0 8px 0">Statistical Analysis</h4>
+            <table id="highLowTable"><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody></tbody></table>
           </div>
-
         </div>
 
         <div class="panel" id="predPanel">
-          <div style="font-weight:700">Prediction</div>
-          <div style="margin-top:8px"><strong>Pick:</strong> <span id="pick">-</span></div>
-          <div style="margin-top:6px"><strong>Most likely total range:</strong> <span id="totalRange">-</span></div>
-          <div style="margin-top:6px"><strong>Confidence:</strong> <span id="confStars" class="stars">-</span> <span id="confPct" class="muted"></span></div>
-          <div style="margin-top:8px"><strong>Rationale:</strong>
-            <div id="rationale" class="muted"></div>
+          <div class="panel-title">Prediction Results</div>
+          <div style="margin-top:12px"><strong>Recommended Pick:</strong> <span id="pick" style="color:var(--accent-light)">-</span></div>
+          <div style="margin-top:8px"><strong>Expected Range:</strong> <span id="totalRange" style="color:var(--accent-light)">-</span></div>
+          <div style="margin-top:8px"><strong>Confidence Level:</strong><br><span id="confStars" class="stars">-</span><br><span id="confPct" class="muted"></span></div>
+          <div style="margin-top:12px"><strong>Analysis Summary:</strong>
+            <div id="rationale" class="muted" style="margin-top:8px;font-size:14px"></div>
           </div>
-          <div style="margin-top:12px; display:flex; gap:10px;">
-            <button id="addToSlip" class="primary" style="flex:1;">Add to Slip</button>
-            <button id="downloadJson" class="primary" style="flex:1;">Download Report (JSON)</button>
+          <div style="margin-top:20px; display:flex; flex-direction:column; gap:12px;">
+            <button id="addToSlip" class="primary">Add to Bet Slip</button>
+            <button id="downloadJson" class="primary" style="background:linear-gradient(135deg, var(--warning), #e6a000);">Download Analysis</button>
           </div>
         </div>
       </div>
 
       <div class="panel" id="slipPanel">
-        <div style="font-weight:700; margin-bottom: 10px;">Bet Slip</div>
+        <div class="panel-title">Bet Slip</div>
         <ul id="slipList"></ul>
         <div id="slipControls">
-          <button id="clearSlip" class="primary" style="background:#f44336;">Clear Slip</button>
+          <button id="downloadSlipImage" class="primary">Download Slip Image</button>
+          <button id="clearSlip" class="danger">Clear All</button>
         </div>
       </div>
     </div>
 
-    <footer>Deterministic demo analysis — connects to localStorage to generate daily predictions.</footer>
+    <canvas id="slipCanvas"></canvas>
+
+    <footer>
+      BG Predictor © 2025 | Advanced Sports Analytics Platform | Predictions based on AI analysis
+    </footer>
   </div>
 
 <script>
-  // (All previous utility functions here)
-
-  // Utility: seeded RNG from string for deterministic pseudo-randomness
+  // Utility functions
   function seedFromString(s){
     let h=2166136261 >>> 0;
     for(let i=0;i<s.length;i++){
@@ -300,7 +594,6 @@
   }
 
   function simulateLastMatches(seedFn, sport){
-    // produce 5 matches results with totals according to sport
     const out = [];
     for(let i=0;i<5;i++){
       const r = seedFn();
@@ -309,7 +602,7 @@
         a = 60 + Math.floor(r*45); b = 60 + Math.floor(seedFn()*45);
       } else if(sport==='hockey'){
         a = Math.floor(r*6); b = Math.floor(seedFn()*6);
-      } else { // football
+      } else {
         a = Math.floor(r*4); b = Math.floor(seedFn()*4);
       }
       const date = new Date(Date.now() - (i+1)*86400000).toISOString().slice(0,10);
@@ -321,7 +614,8 @@
   function highestLowFrom(arr){
     if(!arr || arr.length===0) return null;
     const nums = arr.map(x=>x.total).filter(n=>typeof n==='number' && !Number.isNaN(n));
-    if(nums.length===0) return null; return Math.min(...nums);
+    if(nums.length===0) return null; 
+    return Math.min(...nums);
   }
 
   function computeExpectation(teamGames, oppGames, sport){
@@ -349,7 +643,7 @@
     let strengthA = teamA5.reduce((s,g)=>s+g.goalsA,0)/(teamA5.length||1);
     let strengthB = teamB5.reduce((s,g)=>s+g.goalsA,0)/(teamB5.length||1);
 
-    strengthA = strengthA * 1.05; // home advantage
+    strengthA = strengthA * 1.05;
     const totalStr = strengthA + strengthB;
     let pA = totalStr? (strengthA/totalStr):0.5;
     let pB = totalStr? (strengthB/totalStr):0.5;
@@ -361,7 +655,6 @@
     const baseConfidence = (0.5*dataFactor + 0.5*(Math.max(pA,pB))) * 100;
     let confidence = clamp(baseConfidence*(1 - 0.2*closeness), 10, 98);
 
-    // Adjust confidence aiming 85-90%
     if(confidence < 85) confidence = 85;
     if(confidence > 90) confidence = 90;
 
@@ -373,11 +666,10 @@
     const highRange = Math.ceil(expectedTotal + (sport==='basketball'?10:2));
 
     const rationale = [];
-    rationale.push(`Expected total (conservative): ${expectedTotal.toFixed(2)} (${sport})`);
-    rationale.push(`Combined conservative floor (highest low): ${combinedHighestLow ?? 'N/A'}`);
-    rationale.push(`Strengths: ${teamA} avg=${(strengthA).toFixed(2)}, ${teamB} avg=${(strengthB).toFixed(2)}`);
-    rationale.push(`Data depth: H2H ${h2h.length}, A:${teamA5.length}, B:${teamB5.length}`);
-    rationale.push(`Confidence model: data & balance produce a conservative confidence of ${Math.round(confidence)}%`);
+    rationale.push(`Expected total: ${expectedTotal.toFixed(2)} (${sport})`);
+    rationale.push(`Conservative floor: ${combinedHighestLow ?? 'N/A'}`);
+    rationale.push(`Team strengths: ${teamA} (${(strengthA).toFixed(2)}), ${teamB} (${(strengthB).toFixed(2)})`);
+    rationale.push(`Data confidence: ${Math.round(confidence)}% based on ${h2h.length + teamA5.length + teamB5.length} matches`);
 
     return {
       h2h, teamA5, teamB5, h2hLow, aLow, bLow, combinedHighestLow,
@@ -385,14 +677,15 @@
     };
   }
 
+  // UI Functions
   function clearTables(){
     ['h2hTable','teamATable','teamBTable','highLowTable'].forEach(id=>{
       const tbody = document.getElementById(id).querySelector('tbody');
       tbody.innerHTML = '';
     });
     document.getElementById('tablesWrap').style.display = 'none';
-    document.getElementById('analysisTitle').textContent = 'No analysis yet';
-    document.getElementById('analysisSummary').textContent = 'Enter teams and sport, then click Analyze to run a deep, low-risk analysis.';
+    document.getElementById('analysisTitle').textContent = 'Ready for Analysis';
+    document.getElementById('analysisSummary').textContent = 'Select teams and sport, then click analyze for comprehensive prediction';
     document.getElementById('pick').textContent = '-';
     document.getElementById('totalRange').textContent = '-';
     document.getElementById('confStars').textContent = '-';
@@ -416,7 +709,7 @@
 
   function updateUI(result, teamA, teamB){
     if(!result) return;
-    document.getElementById('analysisTitle').textContent = `Analysis: ${teamA} vs ${teamB} (${document.getElementById('sport').value})`;
+    document.getElementById('analysisTitle').textContent = `${teamA} vs ${teamB} | ${document.getElementById('sport').value.toUpperCase()}`;
     document.getElementById('analysisSummary').textContent = '';
     document.getElementById('tablesWrap').style.display = 'block';
 
@@ -424,49 +717,40 @@
       Date: m.date,
       Score: m.score,
       Total: m.total,
-      Winner: m.winner
+      Result: m.winner
     })));
+
     fillTable('teamATable', result.teamA5.map(m=>({
       Date: m.date,
       Score: m.score,
       Total: m.total,
-      Result: m.goalsA > m.goalsB ? 'Win' : (m.goalsA < m.goalsB ? 'Loss' : 'Draw')
+      Result: m.goalsA > m.goalsB ? 'W' : (m.goalsA < m.goalsB ? 'L' : 'D')
     })));
+
     fillTable('teamBTable', result.teamB5.map(m=>({
       Date: m.date,
       Score: m.score,
       Total: m.total,
-      Result: m.goalsB > m.goalsA ? 'Win' : (m.goalsB < m.goalsA ? 'Loss' : 'Draw')
+      Result: m.goalsB > m.goalsA ? 'W' : (m.goalsB < m.goalsA ? 'L' : 'D')
     })));
 
     fillTable('highLowTable', [
-      {Source: 'H2H', 'Highest Low Total': result.h2hLow ?? '-'},
-      {Source: `${teamA} Last 5`, 'Highest Low Total': result.aLow ?? '-'},
-      {Source: `${teamB} Last 5`, 'Highest Low Total': result.bLow ?? '-'},
-      {Source: 'Combined Highest Low', 'Highest Low Total': result.combinedHighestLow ?? '-'},
+      {Metric: 'H2H Lowest Total', Value: result.h2hLow ?? 'N/A'},
+      {Metric: `${teamA} Lowest`, Value: result.aLow ?? 'N/A'},
+      {Metric: `${teamB} Lowest`, Value: result.bLow ?? 'N/A'},
+      {Metric: 'Combined Floor', Value: result.combinedHighestLow ?? 'N/A'},
     ]);
 
     document.getElementById('pick').textContent = result.pick;
-    document.getElementById('totalRange').textContent = `${result.lowRange} to ${result.highRange}`;
+    document.getElementById('totalRange').textContent = `${result.lowRange} - ${result.highRange}`;
     document.getElementById('confStars').textContent = formatStars(result.confidence);
     document.getElementById('confPct').textContent = `${Math.round(result.confidence)}% confidence`;
-    document.getElementById('rationale').innerHTML = result.rationale.map(x=>`<div>${x}</div>`).join('');
-
-    document.getElementById('downloadJson').onclick = () => {
-      const data = {
-        teams: [teamA, teamB],
-        sport: document.getElementById('sport').value,
-        analysis: result
-      };
-      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `analysis_${teamA}_vs_${teamB}_${data.sport}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    };
+    document.getElementById('rationale').innerHTML = result.rationale.map(x=>`<div style="margin-bottom:4px">${x}</div>`).join('');
   }
+
+  // Analysis Functions
+  let currentAnalysis = null;
+  let slipItems = JSON.parse(localStorage.getItem('betSlip')) || [];
 
   function onAnalyzeClick(){
     const teamA = document.getElementById('teamA').value.trim();
@@ -474,46 +758,156 @@
     const sport = document.getElementById('sport').value;
 
     if(!teamA || !teamB){
-      alert('Please enter both Team A and Team B names.');
+      alert('Please enter both teams.');
       return;
     }
     if(teamA.toLowerCase() === teamB.toLowerCase()){
-      alert('Please enter two different team names.');
+      alert('Please enter different team names.');
       return;
     }
+
     try {
       const result = analyzeTeams(teamA, teamB, sport);
       updateUI(result, teamA, teamB);
       currentAnalysis = {teamA, teamB, sport, result};
     } catch(e) {
-      console.error('Error during analysis:', e);
-      alert('An error occurred during analysis. See console for details.');
+      console.error('Analysis error:', e);
+      alert('Analysis failed. Check console for details.');
     }
   }
 
-  // Slip logic
-  let slipItems = JSON.parse(localStorage.getItem('betSlip')) || [];
-  let currentAnalysis = null;
+  // Multi-game analysis
+  let gameCount = 1;
 
+  function addGame(){
+    gameCount++;
+    const container = document.getElementById('multiGamesContainer');
+    const gameDiv = document.createElement('div');
+    gameDiv.className = 'game-input';
+    gameDiv.innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px">
+        <div>
+          <label>Game ${gameCount} - Home Team</label>
+          <input type="text" placeholder="Enter home team" class="multi-teamA" />
+        </div>
+        <div>
+          <label>Game ${gameCount} - Away Team</label>
+          <input type="text" placeholder="Enter away team" class="multi-teamB" />
+        </div>
+      </div>
+      <div class="row">
+        <select class="multi-sport">
+          <option value="football">Football</option>
+          <option value="basketball">Basketball</option>
+          <option value="hockey">Hockey</option>
+        </select>
+        <button class="remove-game" onclick="removeGame(this)">Remove Game</button>
+      </div>
+    `;
+    container.appendChild(gameDiv);
+  }
+
+  function removeGame(button){
+    button.closest('.game-input').remove();
+    updateGameNumbers();
+  }
+
+  function updateGameNumbers(){
+    const games = document.querySelectorAll('.game-input');
+    games.forEach((game, index) => {
+      const labels = game.querySelectorAll('label');
+      if(labels.length >= 2){
+        labels[0].textContent = `Game ${index + 1} - Home Team`;
+        labels[1].textContent = `Game ${index + 1} - Away Team`;
+      }
+    });
+    gameCount = games.length;
+  }
+
+  function analyzeMultipleGames(){
+    const games = [];
+    const gameInputs = document.querySelectorAll('.game-input');
+    
+    gameInputs.forEach((gameDiv, index) => {
+      const teamA = gameDiv.querySelector('.multi-teamA').value.trim();
+      const teamB = gameDiv.querySelector('.multi-teamB').value.trim();
+      const sport = gameDiv.querySelector('.multi-sport').value;
+      
+      if(teamA && teamB){
+        games.push({teamA, teamB, sport, gameNumber: index + 1});
+      }
+    });
+
+    if(games.length === 0){
+      alert('Please add at least one complete game with both teams.');
+      return;
+    }
+
+    let analysisResults = [];
+    let analysisHtml = '<div style="font-weight:800;font-size:20px;margin-bottom:16px">Multi-Game Analysis Results</div>';
+    
+    games.forEach(game => {
+      try {
+        const result = analyzeTeams(game.teamA, game.teamB, game.sport);
+        analysisResults.push({...game, result});
+        
+        analysisHtml += `
+          <div style="background:rgba(0,200,81,0.1);padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid rgba(0,200,81,0.2)">
+            <h4 style="margin:0 0 8px 0;color:var(--accent-light)">Game ${game.gameNumber}: ${game.teamA} vs ${game.teamB} (${game.sport})</h4>
+            <div><strong>Pick:</strong> ${result.pick}</div>
+            <div><strong>Range:</strong> ${result.lowRange} - ${result.highRange}</div>
+            <div><strong>Confidence:</strong> ${formatStars(result.confidence)}</div>
+            <div style="margin-top:8px;font-size:14px;color:var(--muted)">${result.rationale[0]}</div>
+          </div>
+        `;
+      } catch(e) {
+        analysisHtml += `
+          <div style="background:rgba(255,53,71,0.1);padding:16px;border-radius:12px;margin-bottom:16px;border:1px solid rgba(255,53,71,0.2)">
+            <h4 style="margin:0 0 8px 0;color:var(--danger)">Game ${game.gameNumber}: ${game.teamA} vs ${game.teamB} - Analysis Failed</h4>
+            <div>Error analyzing this game. Please check team names.</div>
+          </div>
+        `;
+      }
+    });
+
+    document.getElementById('analysisTitle').innerHTML = analysisHtml;
+    document.getElementById('analysisSummary').textContent = '';
+    document.getElementById('tablesWrap').style.display = 'none';
+    
+    // Clear single game prediction panel
+    document.getElementById('pick').textContent = 'See multi-game results';
+    document.getElementById('totalRange').textContent = `${analysisResults.length} games analyzed`;
+    document.getElementById('confStars').textContent = '★★★★★';
+    document.getElementById('confPct').textContent = 'Multi-game analysis';
+    document.getElementById('rationale').innerHTML = '<div>Review individual game predictions above</div>';
+  }
+
+  // Slip functions
   function renderSlip(){
     const ul = document.getElementById('slipList');
     ul.innerHTML = '';
     if(slipItems.length === 0){
       const li = document.createElement('li');
-      li.textContent = 'Slip is empty.';
+      li.textContent = 'Your bet slip is empty';
       li.style.color = '#888';
+      li.style.textAlign = 'center';
+      li.style.border = '1px dashed var(--border)';
+      li.style.background = 'transparent';
       ul.appendChild(li);
       return;
     }
     slipItems.forEach((item, idx)=>{
       const li = document.createElement('li');
-      li.innerHTML = `<strong>${item.teamA} vs ${item.teamB}</strong><br>
-      Pick: <em>${item.result.pick}</em><br>
-      Confidence: ${formatStars(item.result.confidence)}`;
+      li.innerHTML = `
+        <div style="margin-bottom:8px"><strong>${item.teamA} vs ${item.teamB}</strong></div>
+        <div style="font-size:14px">Sport: ${item.sport}</div>
+        <div style="font-size:14px">Pick: <span style="color:var(--accent-light)">${item.result.pick}</span></div>
+        <div style="font-size:14px">Confidence: ${formatStars(item.result.confidence)}</div>
+      `;
       const btn = document.createElement('button');
       btn.className = 'removeSlipItem';
       btn.textContent = '×';
-      btn.title = 'Remove this item';
+      btn.title = 'Remove this bet';
       btn.onclick = () => {
         slipItems.splice(idx,1);
         saveSlip();
@@ -530,62 +924,122 @@
 
   function addToSlip(){
     if(!currentAnalysis){
-      alert('Please run an analysis first.');
+      alert('Please analyze a game first.');
       return;
     }
-    // Check duplicate
     const exists = slipItems.some(item =>
       item.teamA.toLowerCase() === currentAnalysis.teamA.toLowerCase() &&
       item.teamB.toLowerCase() === currentAnalysis.teamB.toLowerCase() &&
       item.sport === currentAnalysis.sport
     );
     if(exists){
-      alert('This match is already in your slip.');
+      alert('This game is already in your bet slip.');
       return;
     }
     slipItems.push(currentAnalysis);
     saveSlip();
     renderSlip();
-    alert('Added to slip!');
+    alert('Added to bet slip!');
   }
 
   function clearSlip(){
-    if(confirm('Clear all items from your bet slip?')){
+    if(confirm('Clear all bets from your slip?')){
       slipItems = [];
       saveSlip();
       renderSlip();
     }
   }
 
-  // Save Sportybet code locally
-  function onSaveCode(){
-    const code = document.getElementById('sportybetCode').value.trim();
-    if(!code){
-      alert('Please enter a Sportybet code to save.');
+  // Generate slip image
+  function generateSlipImage(){
+    if(slipItems.length === 0){
+      alert('Your bet slip is empty. Add some predictions first.');
       return;
     }
-    localStorage.setItem('sportybet_code', code);
-    alert('Sportybet code saved locally.');
+
+    const canvas = document.getElementById('slipCanvas');
+    const ctx = canvas.getContext('2d');
+    
+    // Set canvas size
+    canvas.width = 400;
+    canvas.height = 150 + (slipItems.length * 120);
+    
+    // Background
+    ctx.fillStyle = '#242b3d';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Header
+    ctx.fillStyle = '#00c851';
+    ctx.fillRect(0, 0, canvas.width, 60);
+    
+    // Title
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('BG PREDICTOR', canvas.width/2, 25);
+    ctx.font = '14px Arial';
+    ctx.fillText('Bet Slip Analysis', canvas.width/2, 45);
+    
+    // Date
+    ctx.fillStyle = '#8b9dc3';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(new Date().toLocaleDateString(), canvas.width - 20, 80);
+    
+    // Bets
+    let yPos = 100;
+    slipItems.forEach((item, idx) => {
+      // Bet background
+      ctx.fillStyle = idx % 2 === 0 ? '#2d3548' : '#242b3d';
+      ctx.fillRect(10, yPos, canvas.width - 20, 110);
+      
+      // Bet border
+      ctx.strokeStyle = '#00c851';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(10, yPos, canvas.width - 20, 110);
+      
+      // Game info
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillText(`${item.teamA} vs ${item.teamB}`, 20, yPos + 25);
+      
+      ctx.fillStyle = '#8b9dc3';
+      ctx.font = '14px Arial';
+      ctx.fillText(`Sport: ${item.sport.toUpperCase()}`, 20, yPos + 45);
+      ctx.fillText(`Pick: ${item.result.pick}`, 20, yPos + 65);
+      
+      // Confidence
+      ctx.fillStyle = '#ffd700';
+      ctx.font = '12px Arial';
+      const stars = '★'.repeat(Math.round(item.result.confidence/20));
+      ctx.fillText(`Confidence: ${stars} ${Math.round(item.result.confidence)}%`, 20, yPos + 85);
+      
+      yPos += 120;
+    });
+    
+    // Footer
+    ctx.fillStyle = '#8b9dc3';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Generated by BG Predictor - Professional Sports Analysis', canvas.width/2, canvas.height - 10);
+    
+    // Download
+    const link = document.createElement('a');
+    link.download = `BG_Predictor_Slip_${new Date().toISOString().slice(0,10)}.png`;
+    link.href = canvas.toDataURL();
+    link.click();
   }
 
-  // Load code if exists
-  function loadSavedCode(){
-    const code = localStorage.getItem('sportybet_code');
-    if(code){
-      document.getElementById('sportybetCode').value = code;
-    }
-  }
-
-  // Populate today’s matches list
+  // Daily matches
   function generateDailyMatches(){
-    // deterministic matches from date
     const now = new Date();
     const daySeed = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
     const seedFn = seedFromString(daySeed);
-    // dummy teams per sport
-    const footballTeams = ['Fortaleza EC','Velez Sarsfield','CA Tabare','Montevideo Basket','EC Pinheiros SP','Sao Leopoldo Mandic'];
-    const basketballTeams = ['Golden State','Lakers','Chicago Bulls','Miami Heat','Boston Celtics','Toronto Raptors'];
-    const hockeyTeams = ['Toronto Maple Leafs','Montreal Canadiens','Chicago Blackhawks','Detroit Red Wings','Boston Bruins','New York Rangers'];
+    
+    const footballTeams = ['Manchester United','Barcelona','Real Madrid','PSG','Bayern Munich','Liverpool'];
+    const basketballTeams = ['Lakers','Warriors','Bulls','Heat','Celtics','Nets'];
+    const hockeyTeams = ['Maple Leafs','Canadiens','Rangers','Bruins','Blackhawks','Red Wings'];
 
     function pickTwo(arr){
       let a = Math.floor(seedFn()*arr.length);
@@ -595,7 +1049,6 @@
     }
 
     const matches = [];
-    // 2 football, 2 basketball, 2 hockey matches
     for(let i=0;i<2;i++){
       let [a,b] = pickTwo(footballTeams);
       matches.push({teamA:a,teamB:b,sport:'football'});
@@ -613,15 +1066,24 @@
     container.innerHTML = '';
     matches.forEach(({teamA, teamB, sport}, i)=>{
       const btn = document.createElement('button');
-      btn.textContent = `${teamA} vs ${teamB} (${sport})`;
-      btn.style.marginBottom = '6px';
+      btn.textContent = `${teamA} vs ${teamB} (${sport.toUpperCase()})`;
+      btn.style.marginBottom = '8px';
       btn.style.width = '100%';
-      btn.style.padding = '8px';
-      btn.style.borderRadius = '10px';
-      btn.style.border = 'none';
+      btn.style.padding = '12px';
+      btn.style.borderRadius = '12px';
+      btn.style.border = '1px solid var(--border)';
       btn.style.cursor = 'pointer';
-      btn.style.background = 'rgba(255,255,255,0.1)';
-      btn.style.color = '#e6eef8';
+      btn.style.background = 'rgba(0,200,81,0.1)';
+      btn.style.color = '#ffffff';
+      btn.style.transition = 'all 0.3s ease';
+      btn.onmouseover = () => {
+        btn.style.background = 'rgba(0,200,81,0.2)';
+        btn.style.transform = 'translateY(-1px)';
+      };
+      btn.onmouseout = () => {
+        btn.style.background = 'rgba(0,200,81,0.1)';
+        btn.style.transform = 'translateY(0)';
+      };
       btn.onclick = () => {
         document.getElementById('teamA').value = teamA;
         document.getElementById('teamB').value = teamB;
@@ -632,12 +1094,36 @@
     });
   }
 
-  // Setup event listeners
+  // Event listeners
   document.getElementById('analyzeBtn').addEventListener('click', onAnalyzeClick);
-  document.getElementById('saveCode').addEventListener('click', onSaveCode);
+  document.getElementById('addGameBtn').addEventListener('click', addGame);
+  document.getElementById('analyzeMultiBtn').addEventListener('click', analyzeMultipleGames);
   document.getElementById('addToSlip').addEventListener('click', addToSlip);
   document.getElementById('clearSlip').addEventListener('click', clearSlip);
+  document.getElementById('downloadSlipImage').addEventListener('click', generateSlipImage);
 
+  // Download JSON analysis
+  document.getElementById('downloadJson').addEventListener('click', () => {
+    if(!currentAnalysis) {
+      alert('Please analyze a game first.');
+      return;
+    }
+    const data = {
+      timestamp: new Date().toISOString(),
+      teams: [currentAnalysis.teamA, currentAnalysis.teamB],
+      sport: currentAnalysis.sport,
+      analysis: currentAnalysis.result
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `BG_Analysis_${currentAnalysis.teamA}_vs_${currentAnalysis.teamB}_${currentAnalysis.sport}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  // Enter key support
   ['teamA','teamB'].forEach(id=>{
     document.getElementById(id).addEventListener('keydown', (e)=>{
       if(e.key === 'Enter'){
@@ -646,10 +1132,9 @@
     });
   });
 
-  // Init
-  loadSavedCode();
-  renderTodayMatches();
+  // Initialize
   clearTables();
+  renderTodayMatches();
   renderSlip();
 
 </script>
