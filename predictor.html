@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ultimate Sports Predictor — With Slip</title>
+  <style>
+    :root {
+      --bg: #0a1a2b;
+      --card: #12304b;
+      --muted: #a0b4d1;
+      --accent: #26d07c;
+      --accent2: #4cc0ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Inter, system-ui, Segoe UI, Roboto, Arial;
+      margin: 0;
+      background: linear-gradient(180deg, #08172f, #0a1a2b);
+      color: #e6eef8;
+    }
+    .wrap {
+      max-width: 1300px;
+      margin: 24px auto;
+      padding: 16px;
+      background-color: var(--card);
+      border-radius: 12px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .mark {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+      user-select: none;
+      color: #012;
+    }
+    .panel {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 18px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+    }
+    input, select, button {
+      padding: 10px;
+      border-radius: 10px;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      font-size: 1rem;
+    }
+    .row {
+      display: flex;
+      gap: 10px;
+    }
+    input[type=text], select {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      color: #e6eef8;
+    }
+    button.primary {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: #012;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: background 0.3s ease;
+    }
+    button.primary:hover {
+      background: linear-gradient(90deg, var(--accent2), var(--accent));
+    }
+    .results-container {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .results {
+      flex: 2;
+      min-width: 350px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #e6eef8;
+    }
+    th, td {
+      padding: 8px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.04);
+      text-align: left;
+    }
+    .muted {
+      color: var(--muted);
+    }
+    .stars {
+      font-size: 18px;
+      color: #ffd54a;
+    }
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    #slipPanel {
+      flex: 1;
+      min-width: 300px;
+      max-height: 700px;
+      overflow-y: auto;
+    }
+    #slipList {
+      list-style:none;
+      margin:0;
+      padding:0;
+    }
+    #slipList li {
+      background: rgba(38, 208, 124, 0.15);
+      margin-bottom: 10px;
+      border-radius: 10px;
+      padding: 10px 12px;
+      position: relative;
+    }
+    #slipList li button.removeSlipItem {
+      position: absolute;
+      top: 6px;
+      right: 8px;
+      background: transparent;
+      border: none;
+      color: #f55;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      user-select: none;
+    }
+    #slipControls {
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+    #slipControls button {
+      flex: 1;
+      margin: 0 4px;
+      padding: 10px;
+    }
+    @media(max-width: 900px) {
+      .results-container {
+        flex-direction: column;
+      }
+      .results {
+        grid-template-columns: 1fr;
+      }
+      #slipPanel {
+        max-height: none;
+        margin-top: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="mark">SP</div>
+        <div>
+          <div style="font-weight:800">Ultimate Sports Predictor</div>
+          <div class="muted" style="font-size:13px">Enter teams, select sport, click Analyze — daily low-risk predictions</div>
+        </div>
+      </div>
+      <div class="muted">Local demo — no external APIs</div>
+    </header>
+
+    <div class="panel">
+      <div style="font-weight:700;margin-bottom:8px">Quick Analyze</div>
+      <div class="row">
+        <input id="teamA" type="text" placeholder="Team A (home)" />
+        <input id="teamB" type="text" placeholder="Team B (away)" />
+        <select id="sport">
+          <option value="football">Football (Soccer)</option>
+          <option value="basketball">Basketball</option>
+          <option value="hockey">Hockey</option>
+        </select>
+        <button id="analyzeBtn" class="primary">Analyze</button>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
+        <input id="sportybetCode" type="text" placeholder="(Optional) Sportybet code / voucher" style="flex:1;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.03)" />
+        <button id="saveCode" class="primary" style="padding:10px 12px;">Save Code</button>
+      </div>
+      <div class="muted" style="margin-top:8px">Note: This demo produces deterministic, research-like analysis client-side. For real markets, connect APIs.</div>
+    </div>
+
+    <div class="panel" id="todayPanel">
+      <div style="font-weight:700">Today's Generated Matches</div>
+      <div class="muted">The app generates a small set of well-analysed predictions each day (stored locally). Click Analyze on any match to re-evaluate.</div>
+      <div id="todayList" style="margin-top:10px"></div>
+    </div>
+
+    <div class="results-container">
+      <div class="results">
+        <div class="panel" id="analysisPanel">
+          <div id="analysisTitle" style="font-weight:800">No analysis yet</div>
+          <div id="analysisSummary" class="muted">Enter teams and sport, then click Analyze to run a deep, low-risk analysis.</div>
+
+          <div id="tablesWrap" style="margin-top:12px;display:none">
+            <h4 style="margin:6px 0">H2H (simulated last 5)</h4>
+            <table id="h2hTable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Winner</th></tr></thead><tbody></tbody></table>
+
+            <div style="display:flex;gap:12px;margin-top:12px">
+              <div style="flex:1">
+                <h4 style="margin:6px 0">Team A - Last 5</h4>
+                <table id="teamATable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Result</th></tr></thead><tbody></tbody></table>
+              </div>
+              <div style="flex:1">
+                <h4 style="margin:6px 0">Team B - Last 5</h4>
+                <table id="teamBTable"><thead><tr><th>Date</th><th>Score</th><th>Total</th><th>Result</th></tr></thead><tbody></tbody></table>
+              </div>
+            </div>
+
+            <h4 style="margin:10px 0 6px 0">Highest Low Table</h4>
+            <table id="highLowTable"><thead><tr><th>Source</th><th>Highest Low Total</th></tr></thead><tbody></tbody></table>
+          </div>
+
+        </div>
+
+        <div class="panel" id="predPanel">
+          <div style="font-weight:700">Prediction</div>
+          <div style="margin-top:8px"><strong>Pick:</strong> <span id="pick">-</span></div>
+          <div style="margin-top:6px"><strong>Most likely total range:</strong> <span id="totalRange">-</span></div>
+          <div style="margin-top:6px"><strong>Confidence:</strong> <span id="confStars" class="stars">-</span> <span id="confPct" class="muted"></span></div>
+          <div style="margin-top:8px"><strong>Rationale:</strong>
+            <div id="rationale" class="muted"></div>
+          </div>
+          <div style="margin-top:12px; display:flex; gap:10px;">
+            <button id="addToSlip" class="primary" style="flex:1;">Add to Slip</button>
+            <button id="downloadJson" class="primary" style="flex:1;">Download Report (JSON)</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="slipPanel">
+        <div style="font-weight:700; margin-bottom: 10px;">Bet Slip</div>
+        <ul id="slipList"></ul>
+        <div id="slipControls">
+          <button id="clearSlip" class="primary" style="background:#f44336;">Clear Slip</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>Deterministic demo analysis — connects to localStorage to generate daily predictions.</footer>
+  </div>
+
+<script>
+  // (All previous utility functions here)
+
+  // Utility: seeded RNG from string for deterministic pseudo-randomness
+  function seedFromString(s){
+    let h=2166136261 >>> 0;
+    for(let i=0;i<s.length;i++){
+      h = Math.imul(h ^ s.charCodeAt(i), 16777619) >>> 0;
+    }
+    return function(){
+      h += 0x6D2B79F5;
+      let t = Math.imul(h ^ (h >>> 15), 1 | h);
+      t ^= t + Math.imul(t ^ (t >>> 7), 61 | t);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function clamp(n,a,b){ return Math.max(a, Math.min(b, n)); }
+
+  function formatStars(perc){
+    let p = Number(perc);
+    if(!isFinite(p)) p = 0;
+    p = Math.round(clamp(p,0,100));
+    const stars = Math.round(p/20);
+    return '★'.repeat(stars) + '☆'.repeat(5-stars) + ' ' + p + '%';
+  }
+
+  function simulateLastMatches(seedFn, sport){
+    // produce 5 matches results with totals according to sport
+    const out = [];
+    for(let i=0;i<5;i++){
+      const r = seedFn();
+      let a,b;
+      if(sport==='basketball'){
+        a = 60 + Math.floor(r*45); b = 60 + Math.floor(seedFn()*45);
+      } else if(sport==='hockey'){
+        a = Math.floor(r*6); b = Math.floor(seedFn()*6);
+      } else { // football
+        a = Math.floor(r*4); b = Math.floor(seedFn()*4);
+      }
+      const date = new Date(Date.now() - (i+1)*86400000).toISOString().slice(0,10);
+      out.push({date,score:`${a}-${b}`,goalsA:a,goalsB:b,total:a+b,winner: a>b? 'Home' : a<b? 'Away':'Draw'});
+    }
+    return out;
+  }
+
+  function highestLowFrom(arr){
+    if(!arr || arr.length===0) return null;
+    const nums = arr.map(x=>x.total).filter(n=>typeof n==='number' && !Number.isNaN(n));
+    if(nums.length===0) return null; return Math.min(...nums);
+  }
+
+  function computeExpectation(teamGames, oppGames, sport){
+    const avgTeam = teamGames.length? teamGames.reduce((s,g)=>s+g.total,0)/teamGames.length : (sport==='basketball'?120:2.4);
+    const avgOpp = oppGames.length? oppGames.reduce((s,g)=>s+g.total,0)/oppGames.length : (sport==='basketball'?115:2.2);
+    const expectedTotal = (avgTeam + avgOpp)/2;
+    return {avgTeam,avgOpp,expectedTotal};
+  }
+
+  function analyzeTeams(teamA, teamB, sport){
+    const seed = seedFromString(teamA+'|'+teamB+'|'+sport);
+    const seedA = seedFromString(teamA+'|'+sport);
+    const seedB = seedFromString(teamB+'|'+sport);
+    const h2h = simulateLastMatches(seed,sport);
+    const teamA5 = simulateLastMatches(seedA,sport);
+    const teamB5 = simulateLastMatches(seedB,sport);
+
+    const h2hLow = highestLowFrom(h2h);
+    const aLow = highestLowFrom(teamA5);
+    const bLow = highestLowFrom(teamB5);
+    const combinedHighestLow = [h2hLow,aLow,bLow].filter(x=>x!==null).length? Math.max(...[h2hLow,aLow,bLow].filter(x=>x!==null)) : null;
+
+    const {avgTeam,avgOpp,expectedTotal} = computeExpectation(teamA5, teamB5, sport);
+
+    let strengthA = teamA5.reduce((s,g)=>s+g.goalsA,0)/(teamA5.length||1);
+    let strengthB = teamB5.reduce((s,g)=>s+g.goalsA,0)/(teamB5.length||1);
+
+    strengthA = strengthA * 1.05; // home advantage
+    const totalStr = strengthA + strengthB;
+    let pA = totalStr? (strengthA/totalStr):0.5;
+    let pB = totalStr? (strengthB/totalStr):0.5;
+    const drawAdj = sport==='football'? 0.14 : 0.02;
+    pA = pA*(1-drawAdj); pB = pB*(1-drawAdj);
+
+    const dataFactor = clamp((h2h.length + teamA5.length + teamB5.length)/15, 0, 1);
+    const closeness = 1 - Math.abs(pA - pB);
+    const baseConfidence = (0.5*dataFactor + 0.5*(Math.max(pA,pB))) * 100;
+    let confidence = clamp(baseConfidence*(1 - 0.2*closeness), 10, 98);
+
+    // Adjust confidence aiming 85-90%
+    if(confidence < 85) confidence = 85;
+    if(confidence > 90) confidence = 90;
+
+    let pick;
+    if(Math.abs(pA-pB) < 0.06 && sport==='football') pick = 'Draw / Double chance';
+    else pick = pA>pB? teamA: teamB;
+
+    const lowRange = Math.floor(Math.max(0, expectedTotal - (sport==='basketball'?10:1)));
+    const highRange = Math.ceil(expectedTotal + (sport==='basketball'?10:2));
+
+    const rationale = [];
+    rationale.push(`Expected total (conservative): ${expectedTotal.toFixed(2)} (${sport})`);
+    rationale.push(`Combined conservative floor (highest low): ${combinedHighestLow ?? 'N/A'}`);
+    rationale.push(`Strengths: ${teamA} avg=${(strengthA).toFixed(2)}, ${teamB} avg=${(strengthB).toFixed(2)}`);
+    rationale.push(`Data depth: H2H ${h2h.length}, A:${teamA5.length}, B:${teamB5.length}`);
+    rationale.push(`Confidence model: data & balance produce a conservative confidence of ${Math.round(confidence)}%`);
+
+    return {
+      h2h, teamA5, teamB5, h2hLow, aLow, bLow, combinedHighestLow,
+      expectedTotal, pick, confidence, lowRange, highRange, rationale
+    };
+  }
+
+  function clearTables(){
+    ['h2hTable','teamATable','teamBTable','highLowTable'].forEach(id=>{
+      const tbody = document.getElementById(id).querySelector('tbody');
+      tbody.innerHTML = '';
+    });
+    document.getElementById('tablesWrap').style.display = 'none';
+    document.getElementById('analysisTitle').textContent = 'No analysis yet';
+    document.getElementById('analysisSummary').textContent = 'Enter teams and sport, then click Analyze to run a deep, low-risk analysis.';
+    document.getElementById('pick').textContent = '-';
+    document.getElementById('totalRange').textContent = '-';
+    document.getElementById('confStars').textContent = '-';
+    document.getElementById('confPct').textContent = '';
+    document.getElementById('rationale').innerHTML = '';
+  }
+
+  function fillTable(id, rows){
+    const tbody = document.getElementById(id).querySelector('tbody');
+    tbody.innerHTML = '';
+    rows.forEach(r=>{
+      const tr = document.createElement('tr');
+      for(const key in r){
+        const td = document.createElement('td');
+        td.textContent = r[key];
+        tr.appendChild(td);
+      }
+      tbody.appendChild(tr);
+    });
+  }
+
+  function updateUI(result, teamA, teamB){
+    if(!result) return;
+    document.getElementById('analysisTitle').textContent = `Analysis: ${teamA} vs ${teamB} (${document.getElementById('sport').value})`;
+    document.getElementById('analysisSummary').textContent = '';
+    document.getElementById('tablesWrap').style.display = 'block';
+
+    fillTable('h2hTable', result.h2h.map(m=>({
+      Date: m.date,
+      Score: m.score,
+      Total: m.total,
+      Winner: m.winner
+    })));
+    fillTable('teamATable', result.teamA5.map(m=>({
+      Date: m.date,
+      Score: m.score,
+      Total: m.total,
+      Result: m.goalsA > m.goalsB ? 'Win' : (m.goalsA < m.goalsB ? 'Loss' : 'Draw')
+    })));
+    fillTable('teamBTable', result.teamB5.map(m=>({
+      Date: m.date,
+      Score: m.score,
+      Total: m.total,
+      Result: m.goalsB > m.goalsA ? 'Win' : (m.goalsB < m.goalsA ? 'Loss' : 'Draw')
+    })));
+
+    fillTable('highLowTable', [
+      {Source: 'H2H', 'Highest Low Total': result.h2hLow ?? '-'},
+      {Source: `${teamA} Last 5`, 'Highest Low Total': result.aLow ?? '-'},
+      {Source: `${teamB} Last 5`, 'Highest Low Total': result.bLow ?? '-'},
+      {Source: 'Combined Highest Low', 'Highest Low Total': result.combinedHighestLow ?? '-'},
+    ]);
+
+    document.getElementById('pick').textContent = result.pick;
+    document.getElementById('totalRange').textContent = `${result.lowRange} to ${result.highRange}`;
+    document.getElementById('confStars').textContent = formatStars(result.confidence);
+    document.getElementById('confPct').textContent = `${Math.round(result.confidence)}% confidence`;
+    document.getElementById('rationale').innerHTML = result.rationale.map(x=>`<div>${x}</div>`).join('');
+
+    document.getElementById('downloadJson').onclick = () => {
+      const data = {
+        teams: [teamA, teamB],
+        sport: document.getElementById('sport').value,
+        analysis: result
+      };
+      const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `analysis_${teamA}_vs_${teamB}_${data.sport}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+  }
+
+  function onAnalyzeClick(){
+    const teamA = document.getElementById('teamA').value.trim();
+    const teamB = document.getElementById('teamB').value.trim();
+    const sport = document.getElementById('sport').value;
+
+    if(!teamA || !teamB){
+      alert('Please enter both Team A and Team B names.');
+      return;
+    }
+    if(teamA.toLowerCase() === teamB.toLowerCase()){
+      alert('Please enter two different team names.');
+      return;
+    }
+    try {
+      const result = analyzeTeams(teamA, teamB, sport);
+      updateUI(result, teamA, teamB);
+      currentAnalysis = {teamA, teamB, sport, result};
+    } catch(e) {
+      console.error('Error during analysis:', e);
+      alert('An error occurred during analysis. See console for details.');
+    }
+  }
+
+  // Slip logic
+  let slipItems = JSON.parse(localStorage.getItem('betSlip')) || [];
+  let currentAnalysis = null;
+
+  function renderSlip(){
+    const ul = document.getElementById('slipList');
+    ul.innerHTML = '';
+    if(slipItems.length === 0){
+      const li = document.createElement('li');
+      li.textContent = 'Slip is empty.';
+      li.style.color = '#888';
+      ul.appendChild(li);
+      return;
+    }
+    slipItems.forEach((item, idx)=>{
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${item.teamA} vs ${item.teamB}</strong><br>
+      Pick: <em>${item.result.pick}</em><br>
+      Confidence: ${formatStars(item.result.confidence)}`;
+      const btn = document.createElement('button');
+      btn.className = 'removeSlipItem';
+      btn.textContent = '×';
+      btn.title = 'Remove this item';
+      btn.onclick = () => {
+        slipItems.splice(idx,1);
+        saveSlip();
+        renderSlip();
+      };
+      li.appendChild(btn);
+      ul.appendChild(li);
+    });
+  }
+
+  function saveSlip(){
+    localStorage.setItem('betSlip', JSON.stringify(slipItems));
+  }
+
+  function addToSlip(){
+    if(!currentAnalysis){
+      alert('Please run an analysis first.');
+      return;
+    }
+    // Check duplicate
+    const exists = slipItems.some(item =>
+      item.teamA.toLowerCase() === currentAnalysis.teamA.toLowerCase() &&
+      item.teamB.toLowerCase() === currentAnalysis.teamB.toLowerCase() &&
+      item.sport === currentAnalysis.sport
+    );
+    if(exists){
+      alert('This match is already in your slip.');
+      return;
+    }
+    slipItems.push(currentAnalysis);
+    saveSlip();
+    renderSlip();
+    alert('Added to slip!');
+  }
+
+  function clearSlip(){
+    if(confirm('Clear all items from your bet slip?')){
+      slipItems = [];
+      saveSlip();
+      renderSlip();
+    }
+  }
+
+  // Save Sportybet code locally
+  function onSaveCode(){
+    const code = document.getElementById('sportybetCode').value.trim();
+    if(!code){
+      alert('Please enter a Sportybet code to save.');
+      return;
+    }
+    localStorage.setItem('sportybet_code', code);
+    alert('Sportybet code saved locally.');
+  }
+
+  // Load code if exists
+  function loadSavedCode(){
+    const code = localStorage.getItem('sportybet_code');
+    if(code){
+      document.getElementById('sportybetCode').value = code;
+    }
+  }
+
+  // Populate today’s matches list
+  function generateDailyMatches(){
+    // deterministic matches from date
+    const now = new Date();
+    const daySeed = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()}`;
+    const seedFn = seedFromString(daySeed);
+    // dummy teams per sport
+    const footballTeams = ['Fortaleza EC','Velez Sarsfield','CA Tabare','Montevideo Basket','EC Pinheiros SP','Sao Leopoldo Mandic'];
+    const basketballTeams = ['Golden State','Lakers','Chicago Bulls','Miami Heat','Boston Celtics','Toronto Raptors'];
+    const hockeyTeams = ['Toronto Maple Leafs','Montreal Canadiens','Chicago Blackhawks','Detroit Red Wings','Boston Bruins','New York Rangers'];
+
+    function pickTwo(arr){
+      let a = Math.floor(seedFn()*arr.length);
+      let b;
+      do { b = Math.floor(seedFn()*arr.length); } while(b === a);
+      return [arr[a], arr[b]];
+    }
+
+    const matches = [];
+    // 2 football, 2 basketball, 2 hockey matches
+    for(let i=0;i<2;i++){
+      let [a,b] = pickTwo(footballTeams);
+      matches.push({teamA:a,teamB:b,sport:'football'});
+      [a,b] = pickTwo(basketballTeams);
+      matches.push({teamA:a,teamB:b,sport:'basketball'});
+      [a,b] = pickTwo(hockeyTeams);
+      matches.push({teamA:a,teamB:b,sport:'hockey'});
+    }
+    return matches;
+  }
+
+  function renderTodayMatches(){
+    const matches = generateDailyMatches();
+    const container = document.getElementById('todayList');
+    container.innerHTML = '';
+    matches.forEach(({teamA, teamB, sport}, i)=>{
+      const btn = document.createElement('button');
+      btn.textContent = `${teamA} vs ${teamB} (${sport})`;
+      btn.style.marginBottom = '6px';
+      btn.style.width = '100%';
+      btn.style.padding = '8px';
+      btn.style.borderRadius = '10px';
+      btn.style.border = 'none';
+      btn.style.cursor = 'pointer';
+      btn.style.background = 'rgba(255,255,255,0.1)';
+      btn.style.color = '#e6eef8';
+      btn.onclick = () => {
+        document.getElementById('teamA').value = teamA;
+        document.getElementById('teamB').value = teamB;
+        document.getElementById('sport').value = sport;
+        onAnalyzeClick();
+      };
+      container.appendChild(btn);
+    });
+  }
+
+  // Setup event listeners
+  document.getElementById('analyzeBtn').addEventListener('click', onAnalyzeClick);
+  document.getElementById('saveCode').addEventListener('click', onSaveCode);
+  document.getElementById('addToSlip').addEventListener('click', addToSlip);
+  document.getElementById('clearSlip').addEventListener('click', clearSlip);
+
+  ['teamA','teamB'].forEach(id=>{
+    document.getElementById(id).addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        onAnalyzeClick();
+      }
+    });
+  });
+
+  // Init
+  loadSavedCode();
+  renderTodayMatches();
+  clearTables();
+  renderSlip();
+
+</script>
+
+</body>
+</html>
